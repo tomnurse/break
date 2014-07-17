@@ -1,0 +1,72 @@
+//
+//   Name:       break()
+//   Author:     Tom Nurse, 2014
+//   Docs:       https://github.com/tomnurse/break
+//
+
+// Include predefined breakpoint variables
+@import "breakpoints";
+
+
+//Set default values
+$default-constraint: "max";
+$default-units: "px";
+
+@mixin break($point, $point1: "", $point2: "", $point3: "", $units:"") {
+    //Is media query support required by the current stylesheet?
+    @if ($media-queries) {
+
+        @if ($units == "") {
+            $units: $default-units;
+        }
+
+        @if ($point != "none") {
+            @if (type-of($point) == "string") {
+                //Use defined variables
+                @media #{$point} { @content; }
+
+            } @else {
+
+                // Numeric breakpoint
+                @if (type-of($point) == "number") {
+                    @if (type-of($point1) == "number") {
+                        @if ($point2 != "") {
+                            @if (type-of($point2) == "string") {
+                                $units: $point2;
+                            }
+                        }
+                        @if ($point < $point1) {
+                            @media (min-width: #{$point}#{$units}) and (max-width: #{$point1}#{$units}) { @content };
+                        }
+                        @else {
+                            @media (min-width: #{$point1}#{$units}) and (max-width: #{$point}#{$units}) { @content };
+                        }
+                    } @else {
+                        @if ($point1 == "max" or $point1 == "min") {
+                            @if (type-of($point2) == "number") {
+                                @if ($point3 == "max" or "min") {
+                                    @if ($point3 != $point1) {
+                                        @media (#{$point1}-width:#{$point}#{$units}) and (#{$point3}-width:#{$point2}#{$units}) { @content; }
+                                    } @else {
+                                        @warn "Check you are not duplicating 'min' or 'max'.";
+                                    }
+                                }
+                            } @else {
+                                @if (type-of($point2) == "string") {
+                                    $units: $point2;
+                                }
+                                @media (#{$point1}-width:#{$point}#{$units}) { @content; }
+                            }
+                        } @else {
+                            $point1: $default-constraint;
+                            @media (#{$point1}-width:#{$point}#{$units}) { @content; }
+                        }
+                    }
+                }
+            }
+        }
+    } @else {
+    // Output non breakpoint CSS
+        @content;
+    }
+}

@@ -1,0 +1,9 @@
+//Breakpoints for repeated use across a project
+//Define site-wide breakpoints here
+
+//Format: string
+//e.g. "(min-width: 320px)";
+
+$break--large: "(min-width: 1400px)";
+$break--medium: "(min-width: 959px)";
+$break--small: "(min-width: 400px)";
